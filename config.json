@@ -40,7 +40,7 @@
         },
         {
           "id": "TENYR69D",
-          "label": "10 Years at 6.619% (No Payments 90 Days)",
+          "label": "10 Years at 6.619% (No payments for 90 days)",
           "type": "deferred_payment",
           "months": 120,
           "apr": 6.619,
