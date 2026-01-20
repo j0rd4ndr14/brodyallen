@@ -1,0 +1,57 @@
+{
+    "brand": {
+      "title": "Single Investment",
+      "subtitle": "Guided Financing"
+    },
+    "defaults": {
+      "suggested_down_percent": 50
+    },
+    "reasons": {
+      "title": "There are two reasons I'm here today:",
+      "reason_1": "Reason 1 (edit in config.json later)",
+      "reason_2": "Reason 2 (edit in config.json later)",
+      "button_text": "Continue"
+    },
+    "programs": {
+      "primary": {
+        "id": "SAC12",
+        "label": "12 Month Same as Cash",
+        "type": "same_as_cash",
+        "months": 12,
+        "apr": 0,
+        "notes": "0% financing cost if paid in full within 12 months."
+      },
+      "secondary": {
+        "id": "P84",
+        "label": "84 Months at 12.9%",
+        "type": "amortized",
+        "months": 84,
+        "apr": 12.9,
+        "notes": "Estimated payment shown."
+      },
+      "final_options": [
+        {
+          "id": "TENYR69",
+          "label": "10 Years at 6.9%",
+          "type": "amortized",
+          "months": 120,
+          "apr": 6.9,
+          "notes": "Estimated payment shown."
+        },
+        {
+          "id": "TENYR69D",
+          "label": "10 Years at 6.9% (No Payments 90 Days)",
+          "type": "deferred_payment",
+          "months": 120,
+          "apr": 6.9,
+          "defer_months": 3,
+          "notes": "No payments for the first 3 months."
+        }
+      ]
+    },
+    "rounding": {
+      "monthly_to_whole_dollars": true
+    },
+    "disclaimer": "Estimates only. Actual terms subject to lender approval and final contract."
+  }
+  

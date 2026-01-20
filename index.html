@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Single Investment</title>
+  <style>
+    :root{
+      /* Website-ish: clean white + black + SOLID lime */
+      --bg: #ffffff;
+      --card: #ffffff;
+      --surface: #f6f7f8;
+      --text: rgba(0,0,0,.92);
+      --muted: rgba(0,0,0,.62);
+      --muted2: rgba(0,0,0,.48);
+      --line: rgba(0,0,0,.12);
+
+      --lime: #7CFF00; /* solid lime */
+      --ink: #0b0f0a;
+
+      --shadow: 0 18px 60px rgba(0,0,0,.10);
+      --shadow2: 0 10px 30px rgba(0,0,0,.08);
+      --radius: 22px;
+      --radius2: 16px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 550px at 12% 0%, rgba(124,255,0,.10), transparent 55%),
+        radial-gradient(900px 600px at 90% 10%, rgba(124,255,0,.08), transparent 55%),
+        linear-gradient(180deg, #ffffff, #fbfcfb);
+    }
+
+    .wrap{
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 26px 18px 44px;
+    }
+
+    /* Top bar */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow2);
+    }
+
+    .brandLeft{ display:flex; align-items:center; gap:14px; min-width:0; }
+    .logo{ height:44px; width:auto; display:block; }
+
+    .brandRight{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
+
+    .cta{
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.10);
+      background: var(--lime);            /* SOLID */
+      color: #071007;
+      font-weight: 950;
+      font-size: 13px;
+      letter-spacing: .2px;
+      box-shadow: 0 10px 25px rgba(124,255,0,.18);
+      white-space: nowrap;
+    }
+
+    .progress{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .dot{
+      width:8px; height:8px;
+      border-radius:999px;
+      border: 1px solid rgba(0,0,0,.18);
+      background: rgba(0,0,0,.08);
+    }
+    .dot.on{
+      border-color: rgba(124,255,0,.80);
+      background: var(--lime);
+      box-shadow: 0 0 0 6px rgba(124,255,0,.15);
+    }
+
+    /* Main card */
+    .card{
+      margin-top: 14px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .card:before{
+      content:"";
+      position:absolute;
+      left:-25%;
+      top:-2px;
+      width:150%;
+      height:3px;
+      background: linear-gradient(90deg, transparent, var(--lime), transparent);
+      opacity:.9;
+    }
+
+    /* ✅ Critical: screen visibility */
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+
+    .big{
+      font-weight: 950;
+      font-size: 20px;
+      letter-spacing: .1px;
+    }
+
+    .muted{
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      margin-top: 8px;
+    }
+
+    label{
+      font-size: 13px;
+      color: rgba(0,0,0,.80);
+      display:block;
+      margin: 14px 0 7px;
+      letter-spacing: .2px;
+    }
+
+    input{
+      width: 100%;
+      padding: 14px 14px;
+      border: 1px solid rgba(0,0,0,.14);
+      border-radius: 16px;
+      font-size: 16px;
+      color: var(--text);
+      background: var(--surface);
+      outline:none;
+    }
+    input:focus{
+      border-color: rgba(124,255,0,.85);
+      box-shadow: 0 0 0 4px rgba(124,255,0,.18);
+      background:#fff;
+    }
+
+    .grid2{ display:grid; gap:12px; grid-template-columns: 1fr; }
+    @media (min-width: 720px){ .grid2{ grid-template-columns: 1fr 1fr; } }
+
+    .btnRow{
+      display:flex;
+      gap:10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+
+    button{
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,.14);
+      background: #fff;
+      color: rgba(0,0,0,.92);
+      cursor:pointer;
+      font-size: 15px;
+      transition: transform .06s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+      user-select:none;
+    }
+    button:hover{
+      border-color: rgba(0,0,0,.22);
+      background: rgba(0,0,0,.03);
+    }
+    button:active{ transform: translateY(1px); }
+
+    button.primary{
+      background: var(--lime);
+      color:#071007;
+      border-color: rgba(124,255,0,.85);
+      font-weight: 950;
+      box-shadow: 0 12px 28px rgba(124,255,0,.18);
+    }
+    button.primary:hover{
+      filter: brightness(1.04);
+      box-shadow: 0 16px 40px rgba(124,255,0,.22);
+    }
+
+    button.secondary{
+      background: #fff;
+      border-color: rgba(0,0,0,.14);
+      color: rgba(0,0,0,.90);
+    }
+
+    /* Choice chips */
+    button.choice{
+      padding: 12px 14px;
+      min-width: 140px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      border-radius: 18px;
+      background: #fff;
+      border-color: rgba(0,0,0,.14);
+    }
+    .choice .icon{ line-height: 0; display:flex; align-items:center; justify-content:center; }
+    .choice .label{ font-size: 12px; color: rgba(0,0,0,.65); letter-spacing:.2px; text-transform: uppercase; }
+
+    button.choice.primaryChoice{
+      background: var(--lime);
+      color:#071007;
+      border-color: rgba(124,255,0,.85);
+      font-weight: 950;
+    }
+    button.choice.primaryChoice .label{ color: rgba(0,0,0,.70); }
+
+    /* Deal summary tiles */
+    .summary{ display:grid; gap:10px; margin-top: 12px; }
+    .pill{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap:12px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.10);
+    }
+    .pill span:first-child{
+      color: rgba(0,0,0,.56);
+      font-size: 12px;
+      letter-spacing:.2px;
+      text-transform: uppercase;
+    }
+    .pill span:last-child{
+      font-weight: 950;
+      letter-spacing:.2px;
+    }
+
+    .pill.highlight{
+      border-color: rgba(124,255,0,.55);
+      box-shadow: 0 10px 25px rgba(124,255,0,.18);
+    }
+    .pill.highlight span:last-child{ font-size: 20px; }
+
+    .divider{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(0,0,0,.14), transparent);
+      margin: 16px 0;
+    }
+
+    .hint{
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(0,0,0,.55);
+      line-height: 1.35;
+    }
+    .hint em{ font-style: italic; }
+
+    .optionCard{
+      border: 1px solid rgba(0,0,0,.12);
+      border-radius: 18px;
+      padding: 14px;
+      background: #fff;
+    }
+    .optionCard .title{ font-weight: 950; letter-spacing:.2px; }
+    .optionCard .desc{ margin-top: 8px; color: rgba(0,0,0,.62); font-size: 13px; line-height:1.35; }
+
+    /* Callout block for the 50% down page */
+    .callout{
+      border: 1px solid rgba(0,0,0,.12);
+      border-left: 6px solid var(--lime);
+      background: rgba(124,255,0,.08);
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-weight: 950;
+      letter-spacing: .3px;
+      color: rgba(0,0,0,.85);
+    }
+
+    .fineline{
+      display:inline-block;
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .reasonsList{ margin-top: 12px; display:grid; gap:12px; grid-template-columns: 1fr; }
+    @media (min-width: 720px){ .reasonsList{ grid-template-columns: 1fr 1fr; } }
+
+    .reasonItem{
+      border: 1px solid rgba(0,0,0,.12);
+      border-radius: 18px;
+      padding: 14px;
+      background: #fff;
+    }
+    .reasonItem .k{
+      color: rgba(0,0,0,.72);
+      font-weight:950;
+      letter-spacing:.2px;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    .reasonItem .v{
+      margin-top: 8px;
+      color: rgba(0,0,0,.88);
+      line-height:1.35;
+    }
+    .reasonItem .k::before{
+      content:"";
+      display:inline-block;
+      width:10px; height:10px;
+      border-radius:999px;
+      background: var(--lime);
+      margin-right:8px;
+      transform: translateY(1px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="topbar">
+      <div class="brandLeft">
+        <img class="logo" src="logo.png" alt="Brody Allen Exteriors logo" />
+      </div>
+
+      <div class="brandRight">
+        <div class="progress" aria-hidden="true">
+          <div class="dot on" id="p1"></div>
+          <div class="dot" id="p2"></div>
+          <div class="dot" id="p3"></div>
+          <div class="dot" id="p4"></div>
+          <div class="dot" id="p5"></div>
+        </div>
+        <div class="cta" id="brandSubtitle">Guided Financing</div>
+      </div>
+    </div>
+
+    <div class="card">
+
+      <!-- Screen 1: Project Total -->
+      <section id="s1" class="screen active">
+        <label>Project Total:</label>
+        <input id="projectTotal" type="number" min="0" step="1" placeholder="" />
+        <div class="btnRow">
+          <button id="startBtn" class="primary">Continue</button>
+        </div>
+      </section>
+
+      <!-- Screen 2: Suggest down -->
+      <section id="s2" class="screen">
+        <div class="summary">
+          <div class="pill"><span>Total Project Cost:</span><span id="s2_total">$0</span></div>
+
+          <div class="pill"><span>50% Down:</span><span id="s2_suggest">$0</span></div>
+
+          <div class="callout">Most customers put 50% down. Are you comfortable with this down payment?</div>
+        </div>
+        <div class="btnRow">
+          <button id="downYes" class="primary">Yes</button>
+          <button id="downNo" class="secondary">No</button>
+          <button data-back="s1" class="secondary">Back</button>
+        </div>
+      </section>
+
+      <!-- Screen 3: Custom down -->
+      <section id="s3" class="screen">
+        <div class="pill"><span>Total project cost</span><span id="s3_total">$0</span></div>
+        <label>How much would you like to put down?</label>
+        <input id="downCustom" type="number" min="0" step="1" placeholder="" />
+        <div class="btnRow">
+          <button id="downCustomBtn" class="primary">Continue</button>
+          <button data-back="s2" class="secondary">Back</button>
+        </div>
+      </section>
+
+      <!-- Screen 4: Reasons -->
+      <section id="s4" class="screen">
+        <div class="big" id="reasonsTitle">There are two reasons I'm here today:</div>
+        <div class="reasonsList">
+          <div class="reasonItem">
+            <div class="k">Reason 1</div>
+            <div class="v" id="reason1">Reason 1 (edit in config.json later)</div>
+          </div>
+          <div class="reasonItem">
+            <div class="k">Reason 2</div>
+            <div class="v" id="reason2">Reason 2 (edit in config.json later)</div>
+          </div>
+        </div>
+        <div class="btnRow">
+          <button id="reasonsContinue" class="primary">Continue</button>
+          <button data-back="s2" class="secondary">Back</button>
+        </div>
+      </section>
+
+      <!-- Screen 5: Discount entry -->
+      <section id="s5" class="screen">
+        <div class="summary">
+          <div class="pill"><span>Total project cost</span><span id="s5_total">$0</span></div>
+          <div class="pill"><span>Down payment</span><span id="s5_down">$0</span></div>
+        </div>
+
+        <label>Available Discounts:</label>
+        <input id="discount" type="number" min="0" step="1" placeholder="" />
+
+        <div class="btnRow">
+          <button id="discountContinue" class="primary">Continue</button>
+          <button data-back="s4" class="secondary">Back</button>
+        </div>
+
+        <div class="hint"><em>* Discount is applied to the remaining balance after down payment.</em></div>
+      </section>
+
+      <!-- Screen 6: Program 1 -->
+      <section id="s6" class="screen">
+        <div class="summary">
+          <div class="pill"><span>Total project cost</span><span id="s6_total">$0</span></div>
+          <div class="pill"><span>Down payment</span><span id="s6_down">$0</span></div>
+          <div class="pill"><span>Discount</span><span id="s6_discount">$0</span></div>
+          <div class="pill highlight"><span>Amount remaining</span><span id="s6_remaining">$0</span></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="big" id="s6_question">How does $0/month fit in to your budget?<br><span class="fineline"></span></div>
+
+        <div class="btnRow">
+          <button id="p1_yes" class="choice primaryChoice" title="Works">
+            <span class="icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 9V5a3 3 0 0 0-3-3l-3 7v12h10a3 3 0 0 0 3-3v-7a2 2 0 0 0-2-2h-5z"/>
+                <path d="M7 9H4v12h3"/>
+              </svg>
+            </span>
+            <span class="label">Works</span>
+          </button>
+          <button id="p1_no" class="choice" title="Too high">
+            <span class="icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 15v4a3 3 0 0 0 3 3l3-7V3H6a3 3 0 0 0-3 3v7a2 2 0 0 0 2 2h5z"/>
+                <path d="M17 15h3V3h-3"/>
+              </svg>
+            </span>
+            <span class="label">Too high</span>
+          </button>
+          <button id="cashBtn" class="choice" title="Pay in full">
+            <span class="icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="6" width="18" height="12" rx="2"/>
+                <path d="M7 12h.01M17 12h.01"/>
+                <path d="M12 10a2 2 0 1 0 0 4a2 2 0 0 0 0-4z"/>
+              </svg>
+            </span>
+            <span class="label">Pay in full</span>
+          </button>
+          <button data-back="s5" class="secondary">Back</button>
+        </div>
+      </section>
+
+      <!-- Screen 7: Program 2 -->
+      <section id="s7" class="screen">
+        <div class="summary">
+          <div class="pill"><span>Total project cost</span><span id="s7_total">$0</span></div>
+          <div class="pill"><span>Down payment</span><span id="s7_down">$0</span></div>
+          <div class="pill"><span>Discount</span><span id="s7_discount">$0</span></div>
+          <div class="pill highlight"><span>Amount remaining</span><span id="s7_remaining">$0</span></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="big" id="s7_question">How does $0/month fit in to your budget?<br><span class="fineline"></span></div>
+
+        <div class="btnRow">
+          <button id="p2_yes" class="choice primaryChoice" title="Works">
+            <span class="icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 9V5a3 3 0 0 0-3-3l-3 7v12h10a3 3 0 0 0 3-3v-7a2 2 0 0 0-2-2h-5z"/>
+                <path d="M7 9H4v12h3"/>
+              </svg>
+            </span>
+            <span class="label">Works</span>
+          </button>
+          <button id="p2_no" class="choice" title="Too high">
+            <span class="icon">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 15v4a3 3 0 0 0 3 3l3-7V3H6a3 3 0 0 0-3 3v7a2 2 0 0 0 2 2h5z"/>
+                <path d="M17 15h3V3h-3"/>
+              </svg>
+            </span>
+            <span class="label">Too high</span>
+          </button>
+          <button data-back="s6" class="secondary">Back</button>
+        </div>
+      </section>
+
+      <!-- Screen 8: Final two options -->
+      <section id="s8" class="screen">
+        <div class="summary">
+          <div class="pill"><span>Total project cost</span><span id="s8_total">$0</span></div>
+          <div class="pill"><span>Down payment</span><span id="s8_down">$0</span></div>
+          <div class="pill"><span>Discount</span><span id="s8_discount">$0</span></div>
+          <div class="pill highlight"><span>Amount remaining</span><span id="s8_remaining">$0</span></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="muted" style="margin-top:6px;">Two additional programs to consider:</div>
+
+        <div class="grid2" style="margin-top:12px;">
+          <div class="optionCard">
+            <div class="title" id="opt1_title">Option 1</div>
+            <div class="desc" id="opt1_desc">—</div>
+            <div class="btnRow">
+              <button id="opt1_btn" class="primary">Select</button>
+            </div>
+          </div>
+
+          <div class="optionCard">
+            <div class="title" id="opt2_title">Option 2</div>
+            <div class="desc" id="opt2_desc">—</div>
+            <div class="btnRow">
+              <button id="opt2_btn" class="primary">Select</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="btnRow">
+          <button data-back="s7" class="secondary">Back</button>
+        </div>
+
+        <div class="hint"><em id="disclaimerText"></em></div>
+      </section>
+
+      <!-- Final: finance -->
+      <section id="sf" class="screen">
+        <div class="big">Order Summary</div>
+
+        <div class="summary">
+          <div class="pill"><span>Total project cost</span><span id="sf_total">$0</span></div>
+          <div class="pill"><span>Down payment</span><span id="sf_down">$0</span></div>
+          <div class="pill"><span>Discount</span><span id="sf_discount">$0</span></div>
+          <div class="pill"><span>Amount remaining</span><span id="sf_remaining">$0</span></div>
+          <div class="pill"><span>Program</span><span id="sf_program">—</span></div>
+          <div class="pill highlight"><span>Monthly payment</span><span id="sf_monthly">$0/mo</span></div>
+        </div>
+
+        <div class="btnRow">
+          <button id="restart1" class="primary">Start Over</button>
+        </div>
+
+        <div class="hint"><em id="disclaimerText2"></em></div>
+      </section>
+
+      <!-- Final: cash -->
+      <section id="sc" class="screen">
+        <div class="big">Order Summary (Cash)</div>
+
+        <div class="summary">
+          <div class="pill"><span>Total project cost</span><span id="sc_total">$0</span></div>
+          <div class="pill"><span>Down payment</span><span id="sc_down">$0</span></div>
+          <div class="pill"><span>Discount</span><span id="sc_discount">$0</span></div>
+          <div class="pill highlight"><span>Due upon completion</span><span id="sc_due">$0</span></div>
+        </div>
+
+        <div class="btnRow">
+          <button id="restart2" class="primary">Start Over</button>
+        </div>
+
+        <div class="hint"><em id="disclaimerText3"></em></div>
+      </section>
+
+    </div>
+  </div>
+
+<script>
+  let CONFIG = null;
+  const $ = (id) => document.getElementById(id);
+
+  const state = {
+    total: 0,
+    down: 0,
+    discount: 0,
+    remaining: 0
+  };
+
+  function money(n) {
+    const v = isFinite(n) ? n : 0;
+    return v.toLocaleString(undefined, { style: "currency", currency: "USD" });
+  }
+
+  function roundMonthly(x) {
+    if (!CONFIG?.rounding?.monthly_to_whole_dollars) return x;
+    return Math.round(x);
+  }
+
+  function setProgress(step) {
+    ["p1","p2","p3","p4","p5"].forEach((id, idx) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle("on", idx === (step - 1));
+    });
+  }
+
+  function setScreen(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    $(id).classList.add("active");
+    const stepMap = { s1:1, s2:2, s3:2, s4:3, s5:3, s6:4, s7:4, s8:5, sf:5, sc:5 };
+    setProgress(stepMap[id] || 1);
+  }
+
+  function suggestedDown() {
+    const pct = (CONFIG?.defaults?.suggested_down_percent ?? 50) / 100;
+    return Math.round(state.total * pct);
+  }
+
+  function clampInputs() {
+    state.total = Math.max(0, Math.round(state.total));
+    state.down = Math.max(0, Math.round(state.down));
+    state.discount = Math.max(0, Math.round(state.discount));
+
+    if (state.down > state.total) state.down = state.total;
+
+    // Discount cannot exceed remaining after down
+    const maxDiscount = Math.max(0, state.total - state.down);
+    if (state.discount > maxDiscount) state.discount = maxDiscount;
+
+    state.remaining = Math.max(0, state.total - state.down - state.discount);
+  }
+
+  function amortizedMonthly(principal, aprPct, months) {
+    const P = Math.max(0, principal);
+    const n = Math.max(1, months);
+    const r = (Math.max(0, aprPct) / 100) / 12;
+    if (r === 0) return P / n;
+    return P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  }
+
+  function programMonthly(principal, program) {
+    if (program.type === "same_as_cash") {
+      const months = Math.max(1, program.months || 12);
+      const m = principal / months;
+      return {
+        displayMonthly: m,
+        suffix: "",
+        detail: `${months} month payoff • ${program.notes || ""}`.trim()
+      };
+    }
+
+    if (program.type === "deferred_payment") {
+      const months = Math.max(1, program.months || 120);
+      const defer = Math.max(0, program.defer_months || 0);
+      const pay = amortizedMonthly(principal, program.apr || 0, months);
+      return {
+        displayMonthly: pay,
+        suffix: defer > 0 ? `(after ${defer} months)` : "",
+        detail: `${program.apr || 0}% APR • ${program.notes || ""}`.trim()
+      };
+    }
+
+    const months = Math.max(1, program.months || 1);
+    const pay = amortizedMonthly(principal, program.apr || 0, months);
+    return {
+      displayMonthly: pay,
+      suffix: "",
+      detail: `${program.apr || 0}% APR • ${program.notes || ""}`.trim()
+    };
+  }
+
+  function fillTotalsSimple() {
+    $("s2_total").textContent = money(state.total);
+    $("s2_suggest").textContent = money(suggestedDown());
+    $("s3_total").textContent = money(state.total);
+  }
+
+  function fillTotalsWithDeal(prefix) {
+    $(prefix + "_total").textContent = money(state.total);
+    $(prefix + "_down").textContent = money(state.down);
+    $(prefix + "_discount").textContent = "-" + money(state.discount);
+    $(prefix + "_remaining").textContent = money(state.remaining);
+  }
+
+  function showProgramQuestion(elId, program) {
+    clampInputs();
+    const pm = programMonthly(state.remaining, program);
+    const pay = roundMonthly(pm.displayMonthly);
+    const suf = pm.suffix ? ` ${pm.suffix}` : "";
+
+    // Keep details on a new line
+    $(elId).innerHTML = `How does ${money(pay)}/month${suf} fit in to your budget?<br><span class="fineline">${pm.detail || program.label}</span>`;
+  }
+
+  function showProgramOnS6(program) {
+    clampInputs();
+    fillTotalsWithDeal("s6");
+    showProgramQuestion("s6_question", program);
+  }
+
+  function showProgramOnS7(program) {
+    clampInputs();
+    fillTotalsWithDeal("s7");
+    showProgramQuestion("s7_question", program);
+  }
+
+  function finalizeFinance(program) {
+    clampInputs();
+
+    $("sf_total").textContent = money(state.total);
+    $("sf_down").textContent = money(state.down);
+    $("sf_discount").textContent = "-" + money(state.discount);
+    $("sf_remaining").textContent = money(state.remaining);
+
+    const pm = programMonthly(state.remaining, program);
+    const pay = roundMonthly(pm.displayMonthly);
+    const suf = pm.suffix ? ` ${pm.suffix}` : "";
+    $("sf_monthly").textContent = `${money(pay)}/mo${suf}`;
+    $("sf_program").textContent = program.label;
+
+    setScreen("sf");
+  }
+
+  function finalizeCash() {
+    clampInputs();
+    $("sc_total").textContent = money(state.total);
+    $("sc_down").textContent = money(state.down);
+    $("sc_discount").textContent = "-" + money(state.discount);
+    $("sc_due").textContent = money(state.remaining);
+    setScreen("sc");
+  }
+
+  function initUI() {
+    // Brand subtitle (top right)
+    if (CONFIG?.brand?.subtitle) $("brandSubtitle").textContent = CONFIG.brand.subtitle;
+
+    if (CONFIG?.reasons?.title) $("reasonsTitle").textContent = CONFIG.reasons.title;
+    if (CONFIG?.reasons?.reason_1) $("reason1").textContent = CONFIG.reasons.reason_1;
+    if (CONFIG?.reasons?.reason_2) $("reason2").textContent = CONFIG.reasons.reason_2;
+    if (CONFIG?.reasons?.button_text) $("reasonsContinue").textContent = CONFIG.reasons.button_text;
+
+    const disc = CONFIG?.disclaimer || "";
+    $("disclaimerText").textContent = disc;
+    $("disclaimerText2").textContent = disc;
+    $("disclaimerText3").textContent = disc;
+
+    const P1 = CONFIG.programs.primary;
+    const P2 = CONFIG.programs.secondary;
+    const [F1, F2] = CONFIG.programs.final_options;
+
+    $("startBtn").addEventListener("click", () => {
+      state.total = Number($("projectTotal").value || 0);
+      if (state.total <= 0) { alert("Enter a project total first."); return; }
+      state.down = 0;
+      state.discount = 0;
+      clampInputs();
+      fillTotalsSimple();
+      setScreen("s2");
+    });
+
+    $("downYes").addEventListener("click", () => {
+      state.down = suggestedDown();
+      clampInputs();
+      fillTotalsSimple();
+      setScreen("s4");
+    });
+
+    $("downNo").addEventListener("click", () => {
+      state.down = 0;
+      $("downCustom").value = "";
+      clampInputs();
+      fillTotalsSimple();
+      setScreen("s3");
+    });
+
+    $("downCustomBtn").addEventListener("click", () => {
+      state.down = Number($("downCustom").value || 0);
+      clampInputs();
+      setScreen("s4");
+    });
+
+    $("reasonsContinue").addEventListener("click", () => {
+      clampInputs();
+      $("s5_total").textContent = money(state.total);
+      $("s5_down").textContent = money(state.down);
+      // Blank if 0
+      $("discount").value = state.discount ? String(state.discount) : "";
+      setScreen("s5");
+    });
+
+    $("discountContinue").addEventListener("click", () => {
+      state.discount = Number($("discount").value || 0);
+      clampInputs();
+      showProgramOnS6(P1);
+      setScreen("s6");
+    });
+
+    $("p1_yes").addEventListener("click", () => finalizeFinance(P1));
+    $("p1_no").addEventListener("click", () => {
+      showProgramOnS7(P2);
+      setScreen("s7");
+    });
+    $("cashBtn").addEventListener("click", () => finalizeCash());
+
+    $("p2_yes").addEventListener("click", () => finalizeFinance(P2));
+    $("p2_no").addEventListener("click", () => {
+      clampInputs();
+      fillTotalsWithDeal("s8");
+
+      $("opt1_title").textContent = F1.label;
+      $("opt2_title").textContent = F2.label;
+
+      const pm1 = programMonthly(state.remaining, F1);
+      const pm2 = programMonthly(state.remaining, F2);
+
+      $("opt1_desc").textContent =
+        `${F1.apr}% APR • ${F1.months} months • Est. ${money(roundMonthly(pm1.displayMonthly))}/mo`;
+
+      const suf2 = pm2.suffix ? ` ${pm2.suffix}` : "";
+      $("opt2_desc").textContent =
+        `${F2.apr}% APR • ${F2.months} months • Est. ${money(roundMonthly(pm2.displayMonthly))}/mo${suf2}`;
+
+      setScreen("s8");
+    });
+
+    $("opt1_btn").addEventListener("click", () => finalizeFinance(F1));
+    $("opt2_btn").addEventListener("click", () => finalizeFinance(F2));
+
+    document.querySelectorAll("button[data-back]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-back");
+        setScreen(target);
+
+        clampInputs();
+        if (target === "s2" || target === "s3") fillTotalsSimple();
+
+        if (target === "s5") {
+          $("s5_total").textContent = money(state.total);
+          $("s5_down").textContent = money(state.down);
+          $("discount").value = state.discount ? String(state.discount) : "";
+        }
+        if (target === "s6") showProgramOnS6(P1);
+        if (target === "s7") showProgramOnS7(P2);
+        if (target === "s8") fillTotalsWithDeal("s8");
+      });
+    });
+
+    $("restart1").addEventListener("click", () => location.reload());
+    $("restart2").addEventListener("click", () => location.reload());
+  }
+
+  async function main() {
+    const res = await fetch("config.json");
+    CONFIG = await res.json();
+
+    if (!CONFIG?.programs?.primary || !CONFIG?.programs?.secondary || !Array.isArray(CONFIG?.programs?.final_options)) {
+      alert("config.json is missing programs.primary/programs.secondary/programs.final_options.");
+      return;
+    }
+    if (CONFIG.programs.final_options.length < 2) {
+      alert("config.json needs 2 final_options.");
+      return;
+    }
+    initUI();
+  }
+
+  main().catch(err => {
+    console.error(err);
+    alert("Could not load config.json. Make sure you're running via http://localhost (python server) and all files are in the same folder.");
+  });
+</script>
+</body>
+</html>
