@@ -32,18 +32,18 @@
       "final_options": [
         {
           "id": "TENYR69",
-          "label": "10 Years at 6.9%",
+          "label": "10 Years at 6.619%",
           "type": "amortized",
           "months": 120,
-          "apr": 6.9,
+          "apr": 6.619,
           "notes": "Estimated payment shown."
         },
         {
           "id": "TENYR69D",
-          "label": "10 Years at 6.9% (No Payments 90 Days)",
+          "label": "10 Years at 6.619% (No Payments 90 Days)",
           "type": "deferred_payment",
           "months": 120,
-          "apr": 6.9,
+          "apr": 6.619,
           "defer_months": 3,
           "notes": "No payments for the first 3 months."
         }
