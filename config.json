@@ -1,6 +1,6 @@
 {
     "brand": {
-      "title": "Single Investment",
+      "title": "Exterior Project",
       "subtitle": "Guided Financing"
     },
     "defaults": {
@@ -8,8 +8,8 @@
     },
     "reasons": {
       "title": "There are two reasons I'm here today:",
-      "reason_1": "Reason 1 (edit in config.json later)",
-      "reason_2": "Reason 2 (edit in config.json later)",
+      "reason_1": "",
+      "reason_2": "",
       "button_text": "Continue"
     },
     "programs": {

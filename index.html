@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Single Investment</title>
+  <title>Exterior Project</title>
   <style>
     :root{
       /* Website-ish: clean white + black + SOLID lime */
@@ -349,7 +349,6 @@
           <div class="dot" id="p4"></div>
           <div class="dot" id="p5"></div>
         </div>
-        <div class="cta" id="brandSubtitle">Guided Financing</div>
       </div>
     </div>
 
@@ -397,11 +396,13 @@
         <div class="reasonsList">
           <div class="reasonItem">
             <div class="k">Reason 1</div>
-            <div class="v" id="reason1">Reason 1 (edit in config.json later)</div>
+            <div class="v" id="reason1"></div>
+            <img src="YOU.png" alt="YOU" style="margin-top: 12px; max-width: 100%; height: auto;" />
           </div>
           <div class="reasonItem">
             <div class="k">Reason 2</div>
-            <div class="v" id="reason2">Reason 2 (edit in config.json later)</div>
+            <div class="v" id="reason2"></div>
+            <img src="OURPEOPLE.png" alt="OUR PEOPLE" style="margin-top: 12px; max-width: 100%; height: auto;" />
           </div>
         </div>
         <div class="btnRow">
@@ -745,8 +746,7 @@
   }
 
   function initUI() {
-    // Brand subtitle (top right)
-    if (CONFIG?.brand?.subtitle) $("brandSubtitle").textContent = CONFIG.brand.subtitle;
+    // Brand subtitle (top right) - removed
 
     if (CONFIG?.reasons?.title) $("reasonsTitle").textContent = CONFIG.reasons.title;
     if (CONFIG?.reasons?.reason_1) $("reason1").textContent = CONFIG.reasons.reason_1;
